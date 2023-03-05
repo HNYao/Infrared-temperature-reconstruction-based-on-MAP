@@ -6,7 +6,7 @@ class InfraredModel:
         self.temp_u = tu
         self.temp_a = ta
         self.hum = h
-        self.au_co = ac
+        self.au_co = self.humity(self.hum)
         self.sensor_co = sensor
         self.em_co = em
         self.dist = dist
@@ -18,11 +18,11 @@ class InfraredModel:
         :parem temp_true: the true temperature, floart
         :return: the measuring temperature, float
         """
-        temp_iterm = self.em_co * temp_true + (1 - self.em_co) * pow(self.temp_u, self.sensor_co) + \
+        temp_item = self.em_co * temp_true + (1 - self.em_co) * pow(self.temp_u, self.sensor_co) + \
                      (np.exp(self.au_co * self.dist) - 1) * pow(self.temp_a, self.sensor_co)
-        domin_iterm = np.exp(self.hum * self.dist)
+        domin_item = np.exp(self.hum * self.dist)
 
-        return pow(temp_iterm/domin_iterm, 1/self.sensor_co)
+        return pow(temp_item/domin_item, 1/self.sensor_co)
 
     def backward(self, temp_meas):
         """
@@ -30,4 +30,16 @@ class InfraredModel:
         :param temp_meas: the measuring temperature, float
         :return: the measuring temperature, float
         """
-        temp_iterm =
+        temp_item = np.exp(self.au_co * self.dist) * pow(temp_meas, self.sensor_co) - (1 - self.em_co) * \
+                     pow(self.temp_u, self.sensor_co) - (np.exp(self.au_co * self.dist) - 1) * \
+                     pow(self.temp_a, self.sensor_co)
+        domin_item = self.em_co
+
+        return pow(temp_item/domin_item, 1/self.sensor_co)
+
+    def humity(self, humity):
+        """
+        :param humity: the relative humity
+        :return: autenuation coefficient parameter
+        """
+        return humity / 100 * 0.084
