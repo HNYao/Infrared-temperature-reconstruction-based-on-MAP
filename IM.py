@@ -1,12 +1,27 @@
 import numpy as np
+
+
 class InfraredModel:
-    def __int__(self, tt, tm, tu, ta, h, ac, dist, em = 0.97, sensor = 4.09):
-        self.temp_t = tt
-        self.temp_m = tm
-        self.temp_u = tu
-        self.temp_a = ta
+    def __int__(self, temp_true, temp_m, temp_u, temp_a, h, ac, dist, em=0.97, sensor=4.09):
+        '''
+
+        :param temp_true: the true temperature
+        :param temp_m:  the measuring temperature
+        :param temp_u:  the temperature of background
+        :param temp_a: the temperature of atmosphere
+        :param h: the relative humidity
+        :param ac: the attenuation coefficient
+        :param dist: the measuring distance
+        :param em: the emissivity
+        :param sensor: the sensor coefficient, generally equal to 4.09
+        '''
+
+        self.temp_t = temp_true
+        self.temp_m = temp_m
+        self.temp_u = temp_u
+        self.temp_a = temp_a
         self.hum = h
-        self.au_co = self.humity(self.hum)
+        self.au_co = self.humidity(self.hum)
         self.sensor_co = sensor
         self.em_co = em
         self.dist = dist
@@ -15,7 +30,7 @@ class InfraredModel:
         """
         calculate the measuring temperature based on the infrared model
 
-        :parem temp_true: the true temperature, floart
+        :param temp_true: the true temperature, float
         :return: the measuring temperature, float
         """
         temp_item = self.em_co * temp_true + (1 - self.em_co) * pow(self.temp_u, self.sensor_co) + \
@@ -26,6 +41,7 @@ class InfraredModel:
 
     def backward(self, temp_meas):
         """
+        calculate the true temperature
 
         :param temp_meas: the measuring temperature, float
         :return: the measuring temperature, float
@@ -37,9 +53,9 @@ class InfraredModel:
 
         return pow(temp_item/domin_item, 1/self.sensor_co)
 
-    def humity(self, humity):
+    def humidity(self, humidity):
         """
-        :param humity: the relative humity
-        :return: autenuation coefficient parameter
+        :param humidity: the relative humidity
+        :return: attenuation coefficient parameter
         """
-        return humity / 100 * 0.084
+        return humidity / 100 * 0.084
