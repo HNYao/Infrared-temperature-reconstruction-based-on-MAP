@@ -9,7 +9,7 @@ Attenuation during infrared propagation causes the measured temperature always t
 
 # Joint Maximum A Posterior (JMAP)
 - The hierarchy model of the JMAP
-![model](hierarchy model.png)
+![model](hierarchy%20model.png)
 - The distribution we used based on the prior information in the JMAP inference
 ![process](process.png)
 
